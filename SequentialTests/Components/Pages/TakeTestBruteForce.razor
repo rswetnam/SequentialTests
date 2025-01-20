@@ -1,0 +1,138 @@
+﻿@using SequentialTests.Data
+@using SequentialTests.Models
+@inject ISessionRepository SessionRepository
+@inject NavigationManager NavigationManager
+
+
+<div class="card my-3 p-3">
+    <h3>@test.Name</h3>
+
+
+    <EditForm Model="Model" OnSubmit="Submit" FormName="Starship1">
+
+
+        <label>@Model.SortOrder1. <b>@Model.Task1</b> @Model.Question1</label>
+
+        <InputText hidden @bind-value="@Model.QuestionId01" />
+        @if (Model.TakesBoolAnswer1 == true)
+        {
+            <InputCheckbox @bind-Value="@Model.BoolAnswer1" class="mx-3" />
+        }
+        @if (Model.TakesBoolAnswer1 == false)
+        {
+            <InputNumber @bind-Value="@Model.IntAnswer1" class="mx-3" />
+        }
+        <br />
+
+        <label>@Model.SortOrder2. <b>@Model.Task2</b> @Model.Question2</label>
+        <InputText hidden @bind-value="@Model.QuestionId02" />
+        @if (Model.TakesBoolAnswer2 == true)
+        {
+            <InputNumber @bind-Value="@Model.BoolAnswer2" class="mx-3" />
+        }
+        else
+        {
+            <InputNumber @bind-Value="@Model.IntAnswer2" class="mx-3" />
+        }
+        <br />
+
+        <label>@Model.SortOrder3. <b>@Model.Task3</b> @Model.Question3</label>
+        <InputText hidden @bind-value="@Model.QuestionId03" />
+        @if (Model.TakesBoolAnswer3 == true)
+        {
+            <InputCheckbox @bind-Value="@Model.BoolAnswer3" class="mx-3" />
+        }
+        @if (Model.TakesBoolAnswer3 == false)
+        {
+            <InputNumber @bind-Value="@Model.IntAnswer2" class="mx-3" />
+        }
+        <br />
+
+        <label>@Model.SortOrder4. <b>@Model.Task4</b> @Model.Question4</label>
+        <InputText hidden @bind-value="@Model.QuestionId04" />
+        @if (Model.TakesBoolAnswer4 == true)
+        {
+            <InputCheckbox @bind-Value="@Model.BoolAnswer4" class="mx-3" />
+        }
+        @if (Model.TakesBoolAnswer4 == false)
+        {
+            <InputNumber @bind-Value="@Model.IntAnswer2" class="mx-3" />
+        }
+        <br />
+
+        <label>@Model.SortOrder5. <b>@Model.Task5</b> @Model.Question5</label>
+        <InputText hidden @bind-value="@Model.QuestionId05" />
+        @if (Model.TakesBoolAnswer3 == true)
+        {
+            <InputCheckbox @bind-Value="@Model.BoolAnswer5" class="mx-3" />
+        }
+        @if (Model.TakesBoolAnswer5 == false)
+        {
+            <InputNumber @bind-Value="@Model.IntAnswer5" class="mx-3" />
+        }
+        <br />
+
+        <label>@Model.SortOrder6. <b>@Model.Task6</b> @Model.Question6</label>
+        <InputText hidden @bind-value="@Model.QuestionId06" />
+        @if (Model.TakesBoolAnswer3 == true)
+        {
+            <InputCheckbox @bind-Value="@Model.BoolAnswer6" class="mx-3" />
+        }
+        @if (Model.TakesBoolAnswer6 == false)
+        {
+            <InputNumber @bind-Value="@Model.IntAnswer6" class="mx-3" />
+        }
+
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public Guid targetId { get; set; }
+    //public Guid targetId = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
+
+
+
+    [SupplyParameterFromForm]
+    private TestModelBruteForce? Model { get; set; }
+
+
+    public Test test = new Test();
+    public List<TestItem> testItems = new List<TestItem>();
+
+    public List<TestResultDto> testResults = new List<TestResultDto>();
+
+
+
+
+    TestItem[]? testItemsArray;
+
+    public int testItemsCount;
+
+    protected override void OnInitialized() => Model ??= new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        TestModelBruteForce Model = new TestModelBruteForce();
+    }
+
+
+
+    private async Task Submit()
+    {
+        if (Model != null)
+        {
+            var testId = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
+            test = await SessionRepository.GetTestById(testId);
+            TestInstance testInstance = await SessionRepository.CreateTestInstance(test);
+            await SessionRepository.SetTestResults(Model, testInstance.Id);
+
+
+            NavigationManager.NavigateTo("/latest-result/" + testInstance.Id);
+        }
+
+    }
+}

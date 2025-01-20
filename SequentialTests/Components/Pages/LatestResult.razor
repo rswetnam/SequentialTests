@@ -1,0 +1,61 @@
+﻿@using SequentialTests.Data
+@using SequentialTests.Models
+@inject ISessionRepository SessionRepository
+
+@page "/latest-result/{testInstanceId:guid}"
+
+<h3>Test Result</h3>
+@if (testInstance.WhenCompleted > DateTimeOffset.MinValue)
+{
+    <p>Completed: @testInstance.WhenCompleted.ToString("MMM-d-yyyy - HH:mm")</p>
+
+    foreach (var testResult in testResults)
+    {
+        string answer = string.Empty;
+
+        @if (@testResult.IsTrueFalseAnswer)
+        {
+            @if (@testResult.BoolAnswer1 == true)
+            {
+                answer = "✔";
+            }
+            else
+            {
+                answer = "✘";
+            }
+
+        }
+        else
+        {
+            answer = testResult.IntAnswer1.ToString();
+        }
+
+        <p> @testResult.SortOrder <b>@testResult.Task</b> @testResult.Question    @answer</p>
+    }
+}
+
+
+
+@code {
+
+    [Parameter]
+    public Guid testInstanceId { get; set; }
+
+    public TestInstance testInstance = new TestInstance();
+    public List<TestItem> testItems = new List<TestItem>();
+
+    public List<TestResultDto> testResults = new List<TestResultDto>();
+    
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var TestId = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
+        testInstance = await SessionRepository.GetTestInstance(testInstanceId);
+
+        testResults = await SessionRepository.GetTestResults(TestId, testInstance.Id);
+        
+        testItems = await SessionRepository.GetTestItems(TestId);
+    }
+
+}
