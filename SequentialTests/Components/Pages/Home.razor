@@ -7,4 +7,11 @@
 <div class="mb-3">
     <a href="/current-session-brute-force" class="btn btn-primary">Generate a new instance of the test - Brute Force</a>
 </div>
-<a href="/current-session" class="btn btn-primary">Generate a new instance of the test</a>
+
+@code {
+    private Guid testGuid = Guid.Parse("839C1D11-5DC5-48FC-B203-7E2F1566D861");
+}
+
+<div class="mb-3">
+    <a href="/current-session" class="btn btn-primary">Generate a new instance of the test</a>
+</div>

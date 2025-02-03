@@ -3,14 +3,10 @@
 @inject ISessionRepository SessionRepository
 @inject NavigationManager NavigationManager
 
-
 <div class="card my-3 p-3">
     <h3>@test.Name</h3>
 
-
     <EditForm Model="Model" OnSubmit="Submit" FormName="Starship1">
-
-
         <label>@Model.SortOrder1. <b>@Model.Task1</b> @Model.Question1</label>
 
         <InputText hidden @bind-value="@Model.QuestionId01" />

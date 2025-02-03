@@ -3,24 +3,21 @@
 @inject ISessionRepository SessionRepository
 @inject NavigationManager NavigationManager
 
-
 <div class="card my-3 p-3">
     <h3>@test.Name</h3>
 
-
-    <EditForm Model="Model" OnSubmit="Submit" FormName="Starship1">
-
+    <EditForm Model="Model" OnSubmit="Submit">
         @for (int i = 0; i < 6; i++)
         {
             var question = @Model.Questions[i];
             <label>@Model.SortOrders[i] <b>@Model.Tasks[i]</b> @Model.Questions[i]</label>
-            <InputText hidden @bind-value="@Model.Questions[i]" />
-            i++;
-            @if (Model.IsTrueFalseAnswer[i] == true)
+            <InputText hidden @bind-Value="@Model.Questions[i]" />
+            
+            @if(Model.IsTrueFalseAnswer[i] == true)
             {
                 <InputCheckbox @bind-Value="@Model.BoolAnswers[i]" class="mx-3" />
             }
-            @if (Model.IsTrueFalseAnswer[i] == false)
+            @if(Model.IsTrueFalseAnswer[i] == false)
             {
                 <InputNumber @bind-Value="@Model.IntAnswers[i]" class="mx-3" />
             }
@@ -34,33 +31,23 @@
 
 @code {
     [Parameter]
-    public Guid targetId { get; set; }
-
-    [SupplyParameterFromForm]
-    private TestModel? Model { get; set; }
-
+    public TestModel? Model { get; set; }
 
     public Test test = new Test();
     public List<TestItem> testItems = new List<TestItem>();
 
     public List<TestResultDto> testResults = new List<TestResultDto>();
 
-
-    protected override async Task OnParametersSetAsync()
-    {
-        Model = await SessionRepository.PopulateTestModel(test.Id);
-    }
+    public Guid targetId { get; set; } = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
 
     protected override async Task OnInitializedAsync()
     {
-        //TestModel Model = new TestModel();
+        Model = new TestModel();
 
-        //Populate Model with test items   
-        //Model = await SessionRepository.PopulateTestModel(test.Id);
+        test = await SessionRepository.GetTestById(targetId);
 
+        Model = await SessionRepository.PopulateTestModel(targetId);
     }
-
-
 
     private async Task Submit()
     {
@@ -69,11 +56,8 @@
             var testId = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
             test = await SessionRepository.GetTestById(testId);
             TestInstance testInstance = await SessionRepository.CreateTestInstance(test);
-            // await SessionRepository.SetTestResults(Model, testInstance.Id);
-
 
             NavigationManager.NavigateTo("/latest-result/" + testInstance.Id);
         }
-
     }
 }
