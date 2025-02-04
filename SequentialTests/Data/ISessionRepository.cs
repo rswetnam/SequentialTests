@@ -14,11 +14,13 @@ public interface ISessionRepository
 
     Task<TestModel> PopulateTestModel(Guid TestId);
 
-    Task SetTestResults(TestModelBruteForce testModel, Guid sessionId);
+    Task SetTestResultsBruteForce(TestModelBruteForce testModel, Guid sessionId);
+
+    Task SetTestResults(TestModel testModel, Guid TestInstanceId, Guid TestId);
 
     Task<List<TestResultDto>> GetTestResults(Guid TestId, Guid SessionId);
 
-    Task<TestInstance> CreateTestInstance(Test test);
+    Task<TestInstance> CreateResultTestInstance(Test test);
 
     Task<Test> GetTestById(Guid Id);
 }

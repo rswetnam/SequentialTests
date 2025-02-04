@@ -123,8 +123,8 @@
         {
             var testId = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
             test = await SessionRepository.GetTestById(testId);
-            TestInstance testInstance = await SessionRepository.CreateTestInstance(test);
-            await SessionRepository.SetTestResults(Model, testInstance.Id);
+            TestInstance testInstance = await SessionRepository.CreateResultTestInstance(test);
+            await SessionRepository.SetTestResultsBruteForce(Model, testInstance.Id);
 
 
             NavigationManager.NavigateTo("/latest-result/" + testInstance.Id);

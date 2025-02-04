@@ -72,7 +72,7 @@ public class SessionRepository : ISessionRepository
     {
         throw new NotImplementedException();
     }
-    public async Task SetTestResults(TestModelBruteForce testModel, Guid testInstanceId)
+    public async Task SetTestResultsBruteForce(TestModelBruteForce testModel, Guid testInstanceId)
     {
         var TestId = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
         var questionId1 = new Guid("D1D1864D-085F-4E7E-B964-7A99CB7E359B");
@@ -183,12 +183,33 @@ public class SessionRepository : ISessionRepository
         return testResultsList;
     }
 
-    public Task SetTestResults(TestModel testModel)
+    public Task SetTestResults(TestModel testModel, Guid TestInstanceId, Guid TestId)
     {
-        throw new NotImplementedException();
+        for (int i = 0; i < testModel.Questions.Length; i++)
+        {
+            //TestResult testResult = new TestResult
+            //{
+            //    Id = Guid.NewGuid(),
+            //    TestInstanceId = TestInstanceId,
+            //    TestId = TestId,
+            //    QuestionId = item,
+            //    IntAnswer1 = testModel.IntAnswers[Array.IndexOf(testModel.QuestionIds, item)],
+            //    BoolAnswer1 = testModel.BoolAnswers[Array.IndexOf(testModel.QuestionIds, item)],
+            //};
+            TestResult testResult = new TestResult();
+            testResult.Id = Guid.NewGuid();
+            testResult.TestInstanceId = TestInstanceId;
+            testResult.TestId = TestId;
+            testResult.QuestionId = testModel.QuestionIds[i];
+            testResult.IntAnswer1 = testModel.IntAnswers[i];
+            testResult.BoolAnswer1 = testModel.BoolAnswers[i];
+            _context.TestResults.Add(testResult);
+        }
+        _context.SaveChanges();
+        return Task.CompletedTask;
     }
 
-    public Task<TestInstance> CreateTestInstance(Test test)
+    public Task<TestInstance> CreateResultTestInstance(Test test)
     {
         TestInstance testInstance = new TestInstance
         {
@@ -222,8 +243,8 @@ public class SessionRepository : ISessionRepository
         testModel.BoolAnswers = testItemsList.Select(t => t.BoolAnswer).ToArray();
         testModel.IntAnswers = testItemsList.Select(t => t.IntAnswer).ToArray();
         testModel.IsTrueFalseAnswer = testItemsList.Select(t => t.IsTrueFalseAnswer).ToArray();
-        testModel.SortOrders = testItemsList.Select(t => t.SortOrder).ToArray();  
-        testModel.Tasks = testItemsList.Select(t=>t.Task).ToArray();
+        testModel.SortOrders = testItemsList.Select(t => t.SortOrder).ToArray();
+        testModel.Tasks = testItemsList.Select(t => t.Task).ToArray();
         return testModel;
     }
 }
