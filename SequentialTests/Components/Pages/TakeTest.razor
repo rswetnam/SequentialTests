@@ -6,20 +6,20 @@
 <div class="card my-3 p-3">
     <h3>@test.Name</h3>
 
-    <EditForm Model="Model" OnSubmit="Submit">
+    <EditForm Model="TestFormModel" OnSubmit="Submit" FormName="TestForm">
         @for (int i = 0; i < 6; i++)
         {
-            var question = @Model.Questions[i];
-            <label>@Model.SortOrders[i] <b>@Model.Tasks[i]</b> @Model.Questions[i]</label>
-            <InputText hidden @bind-Value="@Model.Questions[i]" />
-            
-            @if(Model.IsTrueFalseAnswer[i] == true)
+            var question = @TestFormModel.Questions[i];
+            <label>@TestFormModel.SortOrders[i] <b>@TestFormModel.Tasks[i]</b> @TestFormModel.Questions[i]</label>
+            <InputText hidden @bind-Value="@TestFormModel.Questions[i]" />
+
+            @if (TestFormModel.IsTrueFalseAnswer[i] == true)
             {
-                <InputCheckbox @bind-Value="@Model.BoolAnswers[i]" class="mx-3" />
+                <InputCheckbox @bind-Value="@TestFormModel.BoolAnswers[i]" class="mx-3" />
             }
-            @if(Model.IsTrueFalseAnswer[i] == false)
+            @if (TestFormModel.IsTrueFalseAnswer[i] == false)
             {
-                <InputNumber @bind-Value="@Model.IntAnswers[i]" class="mx-3" />
+                <InputNumber @bind-Value="@TestFormModel.IntAnswers[i]" class="mx-3" />
             }
             <br />
         }
@@ -31,7 +31,7 @@
 
 @code {
     [Parameter]
-    public TestModel? Model { get; set; }
+    public TestModel? TestFormModel { get; set; }
 
     public Test test = new Test();
     public List<TestItem> testItems = new List<TestItem>();
@@ -42,16 +42,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model = new TestModel();
+        TestFormModel = new TestModel();
 
         test = await SessionRepository.GetTestById(targetId);
 
-        Model = await SessionRepository.PopulateTestModel(targetId);
+        TestFormModel = await SessionRepository.PopulateTestModel(targetId);
     }
 
     private async Task Submit()
     {
-        if (Model != null)
+        if (TestFormModel != null)
         {
             var testId = new Guid("839C1D11-5DC5-48FC-B203-7E2F1566D861");
             test = await SessionRepository.GetTestById(testId);
